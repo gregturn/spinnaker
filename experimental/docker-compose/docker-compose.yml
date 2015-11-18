@@ -4,7 +4,7 @@ clouddriver:
   environment: 
     - AWS_ACCESS_KEY_ID
     - AWS_SECRET_ACCESS_KEY
-    - CF_ACCOUNT_USERNAME
+    - CF_ACCOUNT_NAME
     - CF_ACCOUNT_PASSWORD
     - "SERVICES_FRONT50_BASEURL=http://$DOCKER_IP:8080"  
   image: spinnaker/clouddriver
@@ -13,9 +13,8 @@ clouddriver:
   ports: 
     - "7002:7002"
   volumes: 
-    - "../../config:/opt/spinnaker/config"
-    - "~/.aws:/root/.aws"
-echo: 
+    - "~/src/spinnaker-config:/opt/spinnaker/config"
+echo:
   container_name: echo
   env_file: ./compose.env
   environment: 
@@ -26,7 +25,7 @@ echo:
   ports: 
     - "8089:8089"
   volumes: 
-    - "../../config:/opt/spinnaker/config"
+    - "~/src/spinnaker-config:/opt/spinnaker/config"
 front50: 
   container_name: front50
   env_file: ./compose.env
@@ -36,11 +35,11 @@ front50:
   ports: 
     - "8080:8080"
   volumes: 
-    - "../../config:/opt/spinnaker/config"
+    - "~/src/spinnaker-config:/opt/spinnaker/config"
 frontend: 
   container_name: deck
   environment: 
-    - "API_HOST=$DOCKER_IP:8084"
+    - "API_HOST=http://$DOCKER_IP:8084"
     - DECK_HOST=0.0.0.0
     - DECK_PORT=9000
     - PROTOCOL=http
@@ -48,7 +47,9 @@ frontend:
   image: spinnaker/deck
   ports: 
     - "9000:9000"
-gate: 
+  volumes:
+    - "~/src/spinnaker-config/settings.js:/deck/settings.js"
+gate:
   container_name: gate
   env_file: ./compose.env
   environment: 
@@ -68,7 +69,7 @@ gate:
   ports: 
     - "8084:8084"
   volumes: 
-    - "../../config:/opt/spinnaker/config"
+    - "~/src/spinnaker-config:/opt/spinnaker/config"
 igor: 
   container_name: igor
   env_file: ./compose.env
@@ -81,7 +82,7 @@ igor:
   ports: 
     - "8088:8088"
   volumes: 
-    - "../../config:/opt/spinnaker/config"
+    - "~/src/spinnaker-config:/opt/spinnaker/config"
 orca: 
   container_name: orca
   env_file: ./compose.env
@@ -100,7 +101,7 @@ orca:
   ports: 
     - "8083:8083"
   volumes: 
-    - "../../config:/opt/spinnaker/config"
+    - "~/src/spinnaker-config:/opt/spinnaker/config"
 redis: 
   container_name: redis
   command: "redis-server --appendonly yes"
@@ -116,7 +117,7 @@ rosco:
   ports: 
     - "8087:8087"
   volumes: 
-    - "../../config:/opt/spinnaker/config"
+    - "~/src/spinnaker-config:/opt/spinnaker/config"
   links:
     - "redis"
     - "rush"
@@ -129,4 +130,4 @@ rush:
   ports: 
     - "8085:8085"
   volumes: 
-    - "../../config:/opt/spinnaker/config"
+    - "~/src/spinnaker-config:/opt/spinnaker/config"
